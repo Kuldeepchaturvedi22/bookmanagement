@@ -1,0 +1,15 @@
+com/bookmanagement/entity/User.class
+com/bookmanagement/controller/BookController.class
+com/bookmanagement/entity/Book.class
+com/bookmanagement/controller/UserController.class
+com/bookmanagement/entity/Rental.class
+com/bookmanagement/BookManagementApplication.class
+com/bookmanagement/CorsConfig.class
+com/bookmanagement/service/BookService.class
+com/bookmanagement/repository/BookRepository.class
+com/bookmanagement/entity/User$UserType.class
+com/bookmanagement/service/RentalService.class
+com/bookmanagement/repository/UserRepository.class
+com/bookmanagement/CorsConfig$1.class
+com/bookmanagement/repository/RentalRepository.class
+com/bookmanagement/controller/RentalController.class

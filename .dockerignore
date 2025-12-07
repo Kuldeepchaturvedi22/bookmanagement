@@ -1,0 +1,10 @@
+app.yaml
+cloudbuild.yaml
+Dockerfile
+README.md
+.git
+.gitignore
+.idea
+.vscode
+deploy.sh
+deploy-direct.md

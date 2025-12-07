@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: book-management-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: book-management
+  template:
+    metadata:
+      labels:
+        app: book-management
+    spec:
+      containers:
+      - name: book-management
+        image: book-management:latest
+        imagePullPolicy: IfNotPresent # Important for using local Minikube images
+        ports:
+        - containerPort: 8080
+

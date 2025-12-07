@@ -1,0 +1,8 @@
+steps:
+# 1. Build the JAR file using Maven
+- name: 'gcr.io/cloud-builders/mvn'
+  args: ['package', '-DskipTests']
+
+# 2. Deploy to App Engine using gcloud
+- name: 'gcr.io/cloud-builders/gcloud'
+  args: ['app', 'deploy', 'target/book-management-1.0.0.jar', '--project=bookmanagement-8765']
