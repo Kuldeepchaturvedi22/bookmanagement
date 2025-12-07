@@ -19,6 +19,11 @@ public class BookController {
     public List<Book> getAllBooks() {
         return bookService.getAllBooks();
     }
+
+    @GetMapping("hello")
+    public String hello() {
+        return "Hello World";
+    }
     
     @GetMapping("/available")
     public List<Book> getAvailableBooks() {
