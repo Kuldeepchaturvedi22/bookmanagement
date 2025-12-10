@@ -1,46 +1,63 @@
 pipeline {
     agent any
 
+    tools {
+        maven 'Maven-3.9'
+        jdk 'JDK-21'
+    }
+
     environment {
-        DOCKER_IMAGE_NAME = 'book-management'
-        DOCKER_IMAGE_TAG  = 'latest'
+        DOCKER_HUB_USER = '5122771'
+        APP_NAME = 'bookmanagement'
+        IMAGE_TAG = "v${BUILD_NUMBER}"
+
+        KUBECONFIG = 'C:\\Users\\Kuldeep\\.kube\\config'
     }
 
     stages {
-        stage('Checkout') {
+        stage('Checkout Code') {
             steps {
-                // This will check out the code from the repository configured in the Jenkins job
-                checkout scm
+                git branch: 'main', url: 'https://github.com/Kuldeepchaturvedi22/bookmanagement'
             }
         }
 
-        stage('Build Application') {
+        stage('Build JAR') {
             steps {
-                script {
-                    // Ensure you have a Maven tool configured in Jenkins Global Tool Configuration
-                    // or that the 'mvn' command is available on your Jenkins agent.
-                    sh 'mvn clean package -DskipTests'
-                }
+                bat 'mvn clean package -DskipTests'
             }
         }
 
         stage('Build Docker Image') {
             steps {
                 script {
-                    // This builds the Docker image using the Dockerfile in the project root
-                    sh "docker build -t ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG} ."
+                    bat "docker build -t ${DOCKER_HUB_USER}/${APP_NAME}:${IMAGE_TAG} ."
                 }
             }
         }
 
-        stage('Deploy to Minikube') {
+        stage('Push to Hub') {
             steps {
                 script {
-                    // This applies the Kubernetes configurations from the 'k8s' directory
-                    sh 'kubectl apply -f k8s/'
+                    docker.withRegistry('', 'docker-hub-creds') {
+                        bat "docker push ${DOCKER_HUB_USER}/${APP_NAME}:${IMAGE_TAG}"
+                        bat "docker tag ${DOCKER_HUB_USER}/${APP_NAME}:${IMAGE_TAG} ${DOCKER_HUB_USER}/${APP_NAME}:latest"
+                        bat "docker push ${DOCKER_HUB_USER}/${APP_NAME}:latest"
+                    }
+                }
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                script {
+                    echo 'Deploying to Minikube...'
+                    // Apply the yaml file we created in Step 2
+                    bat "kubectl apply -f k8s/deployment.yaml"
+
+                    // Restart to force the new image download
+                    bat "kubectl rollout restart deployment/spring-boot-app"
                 }
             }
         }
     }
 }
-
